@@ -126,16 +126,16 @@ public class Main extends Application {
         
         datadepot = new Datadepot(new DatabaseText());
         datadepot.opprettDummydata();
-        
-        // try{datadepot.lagreTilDisk();}
-        // catch(Exception e){
-        //     System.err.println("[ERROR] Kan ikke lagre til fil ->" + e);
-        // }
+        /* 
+        try{datadepot.lagreTilDisk();}
+        catch(Exception e){
+             System.err.println("[ERROR] Kan ikke lagre til fil ->" + e);
+         }
 
         try{datadepot.lasteFraDisk();}
         catch(Exception e){
-            System.err.println("[ERROR] Kan ikke laste inn fra fil ->" + e);
-        }
+            System.err.println("[ERROR] Kan ikke laste inn fra fil ->" + e); 
+        }*/
     }
     
     // Starter bare applikasjonen. Burde kanskje ikke røres
