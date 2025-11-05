@@ -7,19 +7,19 @@ public class Bruker {
     public int id;
     public String navn;
     public ArrayList<Billett> aktiveBilletter;
-    public ArrayList<Billett> gamleBilletter;
+    public ArrayList<Billett> gamleBiletter;
     
     public Bruker(int id, String navn) {
         this.id = id;
         this.navn = navn;
         this.aktiveBilletter = new ArrayList<>();
-        this.gamleBilletter = new ArrayList<>();
+        this.gamleBiletter = new ArrayList<>();
     }
 
     public Bruker(String navn) {
         this.navn = navn;
         this.aktiveBilletter = new ArrayList<>();
-        this.gamleBilletter = new ArrayList<>();
+        this.gamleBiletter = new ArrayList<>();
     }
 
     public void kjopBillett(String type, LocalDateTime startTid) {
