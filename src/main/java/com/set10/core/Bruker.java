@@ -8,7 +8,7 @@ public class Bruker {
     public String navn;
     public ArrayList<Billett> aktiveBilletter;
     public ArrayList<Billett> gamleBiletter;
-    
+
     public Bruker(int id, String navn) {
         this.id = id;
         this.navn = navn;
