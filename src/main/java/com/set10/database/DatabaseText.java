@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import com.set10.core.Datadepot;
 
 public class DatabaseText implements IDatabase{
     String path = "data\\data.txt";
+    LocalDate standardFodselsdato = LocalDate.of(2000, 1, 1);
 
     public DatabaseText(){
     }
@@ -159,7 +161,7 @@ public class DatabaseText implements IDatabase{
 
             }else if(line.startsWith("b;")){
                 String[] bits = line.split(";");
-                Bruker bruker = new Bruker(Integer.parseInt(bits[1]),bits[2]);
+                Bruker bruker = new Bruker(Integer.parseInt(bits[1]), bits[2], standardFodselsdato);
 
                 if(bits.length > 3){
                     String[] aktiveBilletterStr = bits[3].split(",");
