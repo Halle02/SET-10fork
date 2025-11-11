@@ -11,7 +11,7 @@ public class Bruker {
     public int id;
     public String navn;
     public LocalDate fodselsDato;
-    public  BrukerGruppe brukerGruppe;
+    public BrukerGruppe brukerGruppe;
     public ArrayList<Billett> aktiveBilletter;
     public ArrayList<Billett> gamleBiletter;
     

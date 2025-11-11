@@ -72,11 +72,6 @@ public class DatabaseText implements IDatabase{
             writer.append("r;"+rute.id +";"+stopp+"\n");
         }
 
-        for(int i = 0; i < datadepot.billettCache.size(); i++){
-            Billett billett = datadepot.billettCache.get(i);
-            writer.append("i;" + billett.id + ";" + billett.type + ";" +billett.startTid + ";" + billett.sluttTid + "\n");
-        }
-
         for(int i = 0; i < datadepot.brukerCache.size(); i++){
             Bruker bruker = datadepot.brukerCache.get(i);
             String aktiveb = "";
@@ -99,7 +94,7 @@ public class DatabaseText implements IDatabase{
 
         for(int i = 0; i < datadepot.billettCache.size(); i++){
             Billett billett = datadepot.billettCache.get(i);
-            writer.append("i;" + billett.id + ";" + billett.type + ";" + billett.startTid + ";" + billett.sluttTid + "\n");
+            writer.append("i;" + billett.id + ";" + billett.type + ";" +billett.startTid + ";" + billett.sluttTid + "\n");
         }
 
         
@@ -184,7 +179,7 @@ public class DatabaseText implements IDatabase{
 
 
                 datadepot.brukerCache.add(bruker);
-                
+
             } else if(line.startsWith("i;")){
                 String[] bits = line.split(";");
                 Billett billett = new Billett(Billett.Type.valueOf(bits[2]), LocalDateTime.parse(bits[3]));

@@ -119,7 +119,7 @@ public class Main extends Application {
 
         ImGui.separator();
         if (!feilmeldingSok.isEmpty()) {
-            ImGui.text("FEIL: " + feilmeldingSok);
+            ImGui.text(feilmeldingSok);
         } else if (funnetReiser.isEmpty() && feilmeldingSok.isEmpty()) {
             ImGui.text("Ingen reiseforslag funnet. Søk etter en reise.");
         } else if (!funnetReiser.isEmpty()) { // Viser kun den neste mulige reisen i listen
@@ -250,7 +250,6 @@ public class Main extends Application {
     @Override
     protected void preRun(){
 
-        
         datadepot = new Datadepot(new DatabaseText());
         datadepot.opprettDummydata();
         
@@ -277,6 +276,15 @@ public class Main extends Application {
         
     }
 
+    protected void stop() {
+        try {
+            datadepot.lagreTilDisk();
+            System.out.println("Data lagret automatisk ved lukking");
+        } catch (Exception e) {
+            System.err.println("Feil ved automatisk lagring: " + e.getMessage());
+        }
+
+    }
     
     // Starter bare applikasjonen. Burde kanskje ikke røres
     public static void main(String[] args) {
