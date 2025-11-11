@@ -65,6 +65,7 @@ public class Main extends Application {
         ImGui.inputText("##avreisetid", avreiseTidInput);
         ImGui.separator();
 
+        ImGui.beginGroup();
         if (ImGui.button("Finn din neste reise")) {
             funnetReiser.clear(); 
             feilmeldingSok = "";  
@@ -95,9 +96,30 @@ public class Main extends Application {
             }
         }
 
+        ImGui.sameLine();
+        if (ImGui.button("Kjøp Enkel-billett")) {
+            if (valgtBrukerId == null) {
+                feilmeldingSok = "Vennligst velg en bruker i 'Debug meny' for å kjøpe billett";
+            } else {
+                try {
+                    Bruker bruker = datadepot.hentBruker(valgtBrukerId);
+                    Billett nyBillett = new Billett(Billett.Type.Enkel, LocalDateTime.now());
+                    datadepot.opprettBillett(nyBillett);
+                    bruker.aktiveBilletter.add(nyBillett);
+                    datadepot.lagreTilDisk();
+                    feilmeldingSok = "Kjøpte billett for " + bruker.navn + "! Gyldig i 90 minutter.";
+                    
+                } catch (Exception e) {
+                    feilmeldingSok = "Feil ved kjøp av billett: " + e.getMessage();
+                    System.err.println("Feil ved kjøp av billett: " + e);
+                }
+            }
+        }
+        ImGui.endGroup();
+
         ImGui.separator();
         if (!feilmeldingSok.isEmpty()) {
-            ImGui.text("FEIL: " + feilmeldingSok);
+            ImGui.text(feilmeldingSok);
         } else if (funnetReiser.isEmpty() && feilmeldingSok.isEmpty()) {
             ImGui.text("Ingen reiseforslag funnet. Søk etter en reise.");
         } else if (!funnetReiser.isEmpty()) { // Viser kun den neste mulige reisen i listen
@@ -228,12 +250,12 @@ public class Main extends Application {
     @Override
     protected void preRun(){
 
-        
         datadepot = new Datadepot(new DatabaseText());
         datadepot.opprettDummydata();
         
         navigasjonstjeneste = new Navigasjonstjeneste();
-        navigasjonstjeneste.dataDepot = datadepot; 
+        navigasjonstjeneste.dataDepot = datadepot;
+
 
         if (datadepot.hentStoppesteder() != null) {
              stoppestedNavn = datadepot.hentStoppesteder().stream()
@@ -244,14 +266,24 @@ public class Main extends Application {
 
         try{datadepot.lagreTilDisk();}
         catch(Exception e){
-             System.err.println("[ERROR] Kan ikke lagre til fil ->" + e);
+             System.err.println("ERROR: Kan ikke lagre til fil " + e);
            }
 
         try{datadepot.lasteFraDisk();}
         catch(Exception e){
-             System.err.println("[ERROR] Kan ikke laste inn fra fil ->" + e); 
+             System.err.println("ERROR: Kan ikke laste inn fra fil " + e); 
         }
         
+    }
+
+    protected void stop() {
+        try {
+            datadepot.lagreTilDisk();
+            System.out.println("Data lagret automatisk ved lukking");
+        } catch (Exception e) {
+            System.err.println("Feil ved automatisk lagring: " + e.getMessage());
+        }
+
     }
     
     // Starter bare applikasjonen. Burde kanskje ikke røres

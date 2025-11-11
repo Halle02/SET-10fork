@@ -2,6 +2,7 @@ package com.set10.core;
 
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -28,13 +29,17 @@ public class Datadepot {
     }
 
     public void opprettDummydata(){
-
+        
+        if (brukerCache.isEmpty() && ruteCache.isEmpty() && stoppestedCache.isEmpty()) {
+            System.out.println("Oppretter dummydata...");
         //Brukere
         opprettBruker(new Bruker("Administrator", LocalDate.of(1980, 1, 1)));
         opprettBruker(new Bruker("Jonas Olsen", LocalDate.of(1995, 5, 20)));
         opprettBruker(new Bruker("Issac Evinskog", LocalDate.of(2005, 10, 15)));
         opprettBruker(new Bruker("Erika Hansen", LocalDate.of(2015, 3, 1)));
         opprettBruker(new Bruker("Olga Bentsdotter", LocalDate.of(1950, 7, 25)));
+        
+
 
        //Ruter  
         Rute r33 = new Rute(33);
@@ -174,6 +179,7 @@ public class Datadepot {
 
 
          }
+    }
 
     private void leggTilAvgangerForStopp(int ruteID, int stoppID, String... tider) {
         Stoppested stopp = hentStoppested(stoppID);
@@ -268,6 +274,13 @@ public class Datadepot {
 
     public ArrayList<Avgang> hentAvganger() {
         return avgangCache;
+    }
+
+    public int opprettBillett(Billett billett) {
+        billett.id = billettCache.size() - 1;
+        billettCache.add(billett);
+        System.out.println("Opprettet billett med ID: " + billett.id);
+        return billett.id;
     }
 
 }
