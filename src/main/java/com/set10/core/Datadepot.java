@@ -2,6 +2,7 @@ package com.set10.core;
 
 import java.time.LocalTime;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -268,6 +269,12 @@ public class Datadepot {
 
     public ArrayList<Avgang> hentAvganger() {
         return avgangCache;
+    }
+
+    public int opprettBillett(Billett billett) {
+        billettCache.add(billett);
+        billett.id = billettCache.size() - 1;
+        return billett.id;
     }
 
 }

@@ -39,13 +39,14 @@ public class Rute {
         return totalAvstand;
     }
 
-    public List<Integer> hentSonerFraRute() {
+    // Brukes ikke for øyeblikket fordi alle stoppesteder har samme sone "Østfold".
+    /* public List<Integer> hentSonerFraRute() {
         Set<Integer> soner = new java.util.HashSet<>();
         for (Stoppested stopp : stopp) {
             soner.add(stopp.getSone());
         }
         return new ArrayList<>(soner);
-    }
+    } */
 
     public void visRute() {
         System.out.println("Rute med " + stopp.size() + " stopp:");

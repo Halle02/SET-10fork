@@ -65,6 +65,7 @@ public class Main extends Application {
         ImGui.inputText("##avreisetid", avreiseTidInput);
         ImGui.separator();
 
+        ImGui.beginGroup();
         if (ImGui.button("Finn din neste reise")) {
             funnetReiser.clear(); 
             feilmeldingSok = "";  
@@ -94,6 +95,27 @@ public class Main extends Application {
                 System.err.println("Feil ved parsing av tid eller søk: " + e.getMessage());
             }
         }
+
+        ImGui.sameLine();
+        if (ImGui.button("Kjøp Enkel-billett")) {
+            if (valgtBrukerId == null) {
+                feilmeldingSok = "Vennligst velg en bruker i 'Debug meny' for å kjøpe billett";
+            } else {
+                try {
+                    Bruker bruker = datadepot.hentBruker(valgtBrukerId);
+                    Billett nyBillett = new Billett(Billett.Type.Enkel, LocalDateTime.now());
+                    datadepot.opprettBillett(nyBillett);
+                    bruker.aktiveBilletter.add(nyBillett);
+                    datadepot.lagreTilDisk();
+                    feilmeldingSok = "Kjøpte billett for " + bruker.navn + "! Gyldig i 90 minutter.";
+                    
+                } catch (Exception e) {
+                    feilmeldingSok = "Feil ved kjøp av billett: " + e.getMessage();
+                    System.err.println("Feil ved kjøp av billett: " + e);
+                }
+            }
+        }
+        ImGui.endGroup();
 
         ImGui.separator();
         if (!feilmeldingSok.isEmpty()) {
@@ -233,7 +255,8 @@ public class Main extends Application {
         datadepot.opprettDummydata();
         
         navigasjonstjeneste = new Navigasjonstjeneste();
-        navigasjonstjeneste.dataDepot = datadepot; 
+        navigasjonstjeneste.dataDepot = datadepot;
+
 
         if (datadepot.hentStoppesteder() != null) {
              stoppestedNavn = datadepot.hentStoppesteder().stream()
@@ -244,15 +267,16 @@ public class Main extends Application {
 
         try{datadepot.lagreTilDisk();}
         catch(Exception e){
-             System.err.println("[ERROR] Kan ikke lagre til fil ->" + e);
+             System.err.println("ERROR: Kan ikke lagre til fil " + e);
            }
 
         try{datadepot.lasteFraDisk();}
         catch(Exception e){
-             System.err.println("[ERROR] Kan ikke laste inn fra fil ->" + e); 
+             System.err.println("ERROR: Kan ikke laste inn fra fil " + e); 
         }
         
     }
+
     
     // Starter bare applikasjonen. Burde kanskje ikke røres
     public static void main(String[] args) {

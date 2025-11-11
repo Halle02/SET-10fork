@@ -10,9 +10,10 @@ public class Validering {
         return now.isAfter(billett.startTid) && now.isBefore(billett.sluttTid);
     }
 
-    public static boolean erBillettGyldigSone(Billett billett, int sone) {
+    // Brukes ikke for øyeblikket fordi alle stoppesteder har samme sone "Østfold".
+    /* public static boolean erBillettGyldigSone(Billett billett, int sone) {
         return billett.gyldigForSoner.contains(sone);
-    }
+    } */
 
 
 

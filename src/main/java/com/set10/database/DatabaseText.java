@@ -97,6 +97,11 @@ public class DatabaseText implements IDatabase{
             writer.append("b;" + bruker.id + ";" + bruker.navn+";"+aktiveb + ";" + gamleb + "\n");
         }
 
+        for(int i = 0; i < datadepot.billettCache.size(); i++){
+            Billett billett = datadepot.billettCache.get(i);
+            writer.append("i;" + billett.id + ";" + billett.type + ";" + billett.startTid + ";" + billett.sluttTid + "\n");
+        }
+
         
         writer.close();
     }
@@ -179,6 +184,13 @@ public class DatabaseText implements IDatabase{
 
 
                 datadepot.brukerCache.add(bruker);
+                
+            } else if(line.startsWith("i;")){
+                String[] bits = line.split(";");
+                Billett billett = new Billett(Billett.Type.valueOf(bits[2]), LocalDateTime.parse(bits[3]));
+                billett.id = Integer.parseInt(bits[1]);
+                billett.sluttTid = LocalDateTime.parse(bits[4]);
+                datadepot.billettCache.add(billett);
             }
         }
         reader.close();

@@ -1,7 +1,7 @@
 package com.set10.core;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
+//import java.util.ArrayList;  Trengs hvis vi skal hente inn soner igjen
+//import java.util.List;
 import java.time.LocalDateTime;
 
 public class Billett {  
@@ -16,13 +16,13 @@ public class Billett {
     
     public LocalDateTime startTid;
     public LocalDateTime sluttTid;
-    public List<Integer> gyldigForSoner;
+    //public List<Integer> gyldigForSoner;
 
 
     public Billett(Type type, LocalDateTime startTid) {
         this.type = type;
         this.startTid = startTid;
-        this.gyldigForSoner = new ArrayList<>(); // Lager bare listen, en annen metode for å legge til soner.
+        //this.gyldigForSoner = new ArrayList<>(); // Lager bare listen, en annen metode for å legge til soner.
 
         switch(type){
             case Enkel:
@@ -37,11 +37,12 @@ public class Billett {
 
     }
 
-    public void leggTilSone(int sone) {
+    // Brukes ikke fordi alle stoppesteder har samme sone "Østfold".
+    /* public void leggTilSone(int sone) {
         if (!gyldigForSoner.contains(sone)) {
             gyldigForSoner.add(sone);
         }
-    }
+    } */
 
     @Override
     public String toString() {
@@ -49,7 +50,7 @@ public class Billett {
         return "\nBillett:\n" +
                 "Type: " + type +
                 "\nStarttid: " + startTid.format(formatter) +
-                "\nSlutttid: " + sluttTid.format(formatter) +
-                "\nGyldig for soner: " + gyldigForSoner.toString();
+                "\nSlutttid: " + sluttTid.format(formatter);
+                //"\nGyldig for soner: " + gyldigForSoner.toString();
     }
 }
