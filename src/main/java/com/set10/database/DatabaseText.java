@@ -205,7 +205,7 @@ public class DatabaseText implements IDatabase{
                             int billettId = Integer.parseInt(strId);
                             Billett billett = hentBillettEtterId(datadepot, billettId);
                             if (billett != null) {
-                                bruker.gamleBilletter.add(billett);
+                                bruker.gamleBiletter.add(billett);
                             } else {
                                 System.err.println("[ADVARSEL] Fant ikke gammel billett med ID: " + billettId + " for bruker " + bruker.navn);
                             }
