@@ -110,7 +110,10 @@ public class DatabaseText implements IDatabase{
         datadepot.ruteCache = new ArrayList<>();
         datadepot.avgangCache = new ArrayList<>();
 
+        ArrayList<String> userLines = new ArrayList<>();
         String line;
+        
+        // PASS 1: Load all data except users (bruker)
         while ((line = reader.readLine()) != null){
             if(line.startsWith("a;")){
                 String[] bits = line.split(";");
@@ -157,29 +160,13 @@ public class DatabaseText implements IDatabase{
             }else if(line.startsWith("i;")){
                 String[] bits = line.split(";");
                 Billett billett = new Billett(Billett.Type.valueOf(bits[2]), LocalDateTime.parse(bits[3]));
+                billett.id = Integer.parseInt(bits[1]);
+                billett.sluttTid = LocalDateTime.parse(bits[4]);
                 datadepot.billettCache.add(billett);
 
             }else if(line.startsWith("b;")){
-                String[] bits = line.split(";");
-                Bruker bruker = new Bruker(Integer.parseInt(bits[1]), bits[2], standardFodselsdato);
-
-                if(bits.length > 3){
-                    String[] aktiveBilletterStr = bits[3].split(",");
-                    for(String strId : aktiveBilletterStr){
-                        Billett billett = datadepot.billettCache.get(Integer.parseInt(strId));
-                        bruker.aktiveBilletter.add(billett);
-                    }
-
-                    String[] gamleBilletterStr = bits[4].split(",");
-                    for(String strId : gamleBilletterStr){
-                        Billett billett = datadepot.billettCache.get(Integer.parseInt(strId));
-                        bruker.gamleBiletter.add(billett);
-                    }
-                }
-
-
-                datadepot.brukerCache.add(bruker);
-
+                // Store user lines for PASS 2
+                userLines.add(line);
             } else if(line.startsWith("i;")){
                 String[] bits = line.split(";");
                 Billett billett = new Billett(Billett.Type.valueOf(bits[2]), LocalDateTime.parse(bits[3]));
@@ -189,5 +176,57 @@ public class DatabaseText implements IDatabase{
             }
         }
         reader.close();
+        
+        // PASS 2: Process user lines (now that all tickets are loaded)
+        for(String userLine : userLines){
+            String[] bits = userLine.split(";");
+            Bruker bruker = new Bruker(Integer.parseInt(bits[1]), bits[2], standardFodselsdato);
+
+            if(bits.length > 3 && !bits[3].isEmpty()){
+                String[] aktiveBilletterStr = bits[3].split(",");
+                for(String strId : aktiveBilletterStr){
+                    try {
+                        int billettId = Integer.parseInt(strId);
+                        Billett billett = hentBillettEtterId(datadepot, billettId);
+                        if (billett != null) {
+                            bruker.aktiveBilletter.add(billett);
+                        } else {
+                            System.err.println("[ADVARSEL] Fant ikke aktiv billett med ID: " + billettId + " for bruker " + bruker.navn);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("[ADVARSEL] Feilet å laste aktiv billett. Datafeil: " + strId);
+                    }
+                }
+
+                if(bits.length > 4 && !bits[4].isEmpty()){
+                    String[] gamleBilletterStr = bits[4].split(",");
+                    for(String strId : gamleBilletterStr){
+                        try {
+                            int billettId = Integer.parseInt(strId);
+                            Billett billett = hentBillettEtterId(datadepot, billettId);
+                            if (billett != null) {
+                                bruker.gamleBiletter.add(billett);
+                            } else {
+                                System.err.println("[ADVARSEL] Fant ikke gammel billett med ID: " + billettId + " for bruker " + bruker.navn);
+                            }
+                        } catch (Exception e) {
+                            System.err.println("[ADVARSEL] Feilet å laste gammel billett. Datafeil: " + strId);
+                        }
+                    }
+                }
+            }
+
+            datadepot.brukerCache.add(bruker);
+        }
+
+    }
+
+    private Billett hentBillettEtterId(Datadepot datadepot, int billettId) {
+        for (Billett billett : datadepot.billettCache) {
+            if (billett.id == billettId) {
+                return billett;
+            }
+        }
+        return null;
     }
 }

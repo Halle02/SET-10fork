@@ -195,7 +195,7 @@ public class Datadepot {
             Avgang avg = new Avgang(ruteID, stoppID, lt);
             opprettAvgang(avg);
             stopp.leggTilAvgang(avg);
-            avgangCache.add(avg); 
+            //avgangCache.add(avg); 
         }
     }
 
@@ -277,7 +277,7 @@ public class Datadepot {
     }
 
     public int opprettBillett(Billett billett) {
-        billett.id = billettCache.size() - 1;
+        billett.id = billettCache.size() + 1;
         billettCache.add(billett);
         System.out.println("Opprettet billett med ID: " + billett.id);
         return billett.id;

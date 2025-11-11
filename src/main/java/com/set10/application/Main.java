@@ -250,32 +250,43 @@ public class Main extends Application {
     @Override
     protected void preRun(){
 
+        // 1. Initialiser datadepot FØRST
         datadepot = new Datadepot(new DatabaseText());
-        datadepot.opprettDummydata();
         
-        navigasjonstjeneste = new Navigasjonstjeneste();
-        navigasjonstjeneste.dataDepot = datadepot;
+        // 2. Prøv å laste inn eksisterende data.
+        boolean lastetFraDisk = false;
+        try{
+            //datadepot.opprettDummydata();
+            datadepot.lasteFraDisk();
+            lastetFraDisk = true;
+            System.out.println("Data lastet inn fra fil.");
+        }
+        catch(Exception e){
+             System.err.println("[INFO] Kunne ikke laste inn data. Oppretter dummy-data. -> " + e.getMessage()); 
+        }
 
+        // 3. Hvis innlasting feilet (første gang), opprett dummy-data.
+        if (!lastetFraDisk) {
+             datadepot.opprettDummydata();
+             try{
+                // LAGRER KUN ved FØRSTE GANGS kjoring for å initialisere data.txt
+                datadepot.lagreTilDisk(); 
+             }
+             catch(Exception e){
+                 System.err.println("[ERROR] Kan ikke lagre dummy-data til fil ->" + e);
+             }
+        }
+        
+        // 4. Fortsett med resten av initialiseringen.
+        navigasjonstjeneste = new Navigasjonstjeneste();
+        navigasjonstjeneste.dataDepot = datadepot; 
 
         if (datadepot.hentStoppesteder() != null) {
              stoppestedNavn = datadepot.hentStoppesteder().stream()
                                  .map(s -> s.navn)
                                  .toArray(String[]::new);
         } else { stoppestedNavn = new String[0];}
-        
-
-        try{datadepot.lagreTilDisk();}
-        catch(Exception e){
-             System.err.println("ERROR: Kan ikke lagre til fil " + e);
-           }
-
-        try{datadepot.lasteFraDisk();}
-        catch(Exception e){
-             System.err.println("ERROR: Kan ikke laste inn fra fil " + e); 
-        }
-        
     }
-
     protected void stop() {
         try {
             datadepot.lagreTilDisk();
