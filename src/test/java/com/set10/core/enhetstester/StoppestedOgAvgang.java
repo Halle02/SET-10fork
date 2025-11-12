@@ -1,4 +1,4 @@
-package com.set10.core;
+package com.set10.core.enhetstester;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -8,9 +8,12 @@ import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.set10.core.Avgang;
+import com.set10.core.Datadepot;
+import com.set10.core.Stoppested;
 import com.set10.database.DatabaseText;
 
-public class EnhetsTester {
+public class StoppestedOgAvgang {
     @Test
     @DisplayName("Opprett Stoppested")
     void testOpprettStoppested() {
