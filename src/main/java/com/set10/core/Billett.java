@@ -47,8 +47,10 @@ public class Billett {
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return "\nBillett:\n" +
                 "Type: " + type +
+                "\nDato: " + startTid.format(dateFormatter) +
                 "\nStarttid: " + startTid.format(formatter) +
                 "\nSlutttid: " + sluttTid.format(formatter);
                 //"\nGyldig for soner: " + gyldigForSoner.toString();
