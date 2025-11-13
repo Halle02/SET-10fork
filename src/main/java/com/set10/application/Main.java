@@ -217,6 +217,10 @@ public class Main extends Application {
                 // Billetter
                 if (ImGui.collapsingHeader("Billetter")) {
                     ImGui.separator();
+                    
+                    // Oppdater billettestatus (flytt utgåtte til gamleBiletter)
+                    valgtBruker.opdaterBillettStatus();
+                    
                     if (valgtBruker.aktiveBilletter.isEmpty()) {
                         ImGui.text("Brukeren har ingen aktive billetter.");
                     } else {
@@ -229,9 +233,11 @@ public class Main extends Application {
                     }
                     ImGui.spacing();
                     if (!valgtBruker.gamleBiletter.isEmpty()) {
-                         if (ImGui.treeNode("Tidligere billetter")) {
+                         if (ImGui.treeNode("Utgåtte/gamle billetter")) {
                             for (Billett billett : valgtBruker.gamleBiletter) {
                                 ImGui.text(billett.toString());
+                                ImGui.sameLine();
+                                ImGui.text("[UTGÅTT]");
                             }
                             ImGui.treePop();
                          }

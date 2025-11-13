@@ -58,6 +58,26 @@ public class Bruker {
         System.out.println(navn + " kjøpte " + type + " billett til " + mottaker.navn);
     }
 
+    /**
+     * Moves expired tickets from aktiveBilletter to gamleBilletter.
+     * Should be called before displaying tickets in the UI.
+     */
+    public void opdaterBillettStatus() {
+        ArrayList<Billett> billettSomMaFlyttes = new ArrayList<>();
+        
+        for (Billett billett : aktiveBilletter) {
+            if (!Validering.erBillettGyldigTid(billett)) {
+                billettSomMaFlyttes.add(billett);
+            }
+        }
+        
+        // Flytt utgåtte billetter over til gamleBiletter
+        for (Billett billett : billettSomMaFlyttes) {
+            aktiveBilletter.remove(billett);
+            gamleBiletter.add(billett);
+        }
+    }
+
     @Override
     public String toString() {
         return "BrukerId: " + id + " Navn: " + navn;
