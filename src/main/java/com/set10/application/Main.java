@@ -214,8 +214,8 @@ public class Main extends Application {
                     }
                 }
                 
-                // Billetter
-                if (ImGui.collapsingHeader("Billetter")) {
+                // Aktive Billetter
+                if (ImGui.collapsingHeader("Aktive Billetter")) {
                     ImGui.separator();
                     
                     // Oppdater billettestatus (flytt utgåtte til gamleBiletter)
@@ -231,7 +231,11 @@ public class Main extends Application {
                             ImGui.text("(Gyldig til: " + billett.sluttTid.toLocalTime() + ")"); 
                         }
                     }
-                    ImGui.spacing();
+                }
+
+                // Utgåtte Billetter
+                if (ImGui.collapsingHeader("Utgåtte Billetter")) {
+                    ImGui.separator();
                     
                     if (valgtBruker.gamleBiletter.isEmpty()) {
                         ImGui.text("Brukeren har ingen utgåtte billetter.");
