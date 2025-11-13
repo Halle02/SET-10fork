@@ -232,15 +232,16 @@ public class Main extends Application {
                         }
                     }
                     ImGui.spacing();
-                    if (!valgtBruker.gamleBiletter.isEmpty()) {
-                         if (ImGui.treeNode("Utgåtte/gamle billetter")) {
-                            for (Billett billett : valgtBruker.gamleBiletter) {
-                                ImGui.text(billett.toString());
-                                ImGui.sameLine();
-                                ImGui.text("[UTGÅTT]");
-                            }
-                            ImGui.treePop();
-                         }
+                    
+                    if (valgtBruker.gamleBiletter.isEmpty()) {
+                        ImGui.text("Brukeren har ingen utgåtte billetter.");
+                    } else {
+                        ImGui.text("Utgåtte billetter for " + valgtBruker.navn + ":");
+                        for (Billett billett : valgtBruker.gamleBiletter) {
+                            ImGui.text(billett.toString());
+                            ImGui.sameLine();
+                            ImGui.text("[UTGÅTT]");
+                        }
                     }
                 }
             }
