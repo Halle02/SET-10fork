@@ -38,6 +38,7 @@ public class Main extends Application {
     public ImInt valgtFraStopp = new ImInt(0);
     public ImInt valgtTilStopp = new ImInt(0);
     public ImString avreiseTidInput = new ImString("12:30", 128);
+    public ImString avreiseDatoInput = new ImString(LocalDate.now().toString(), 128);
     public List<Reiseforslag> funnetReiser = new ArrayList<>();
     public String feilmeldingSok = "";
 
@@ -63,6 +64,9 @@ public class Main extends Application {
         ImGui.separator();
         ImGui.text("Avreisetid (format HH:MM):");
         ImGui.inputText("##avreisetid", avreiseTidInput);
+        ImGui.sameLine();
+        ImGui.text("Dato (YYYY-MM-DD):");
+        ImGui.inputText("##avreisedato", avreiseDatoInput);
         ImGui.separator();
 
         ImGui.beginGroup();
@@ -81,7 +85,8 @@ public class Main extends Application {
                         feilmeldingSok = "Start- og stoppested kan ikke være det samme.";
                     } else {
                         LocalTime onsketTid = LocalTime.parse(avreiseTidInput.get());
-                        LocalDateTime avreiseDatoTid = onsketTid.atDate(LocalDate.now()); 
+                        LocalDate onsketDato = LocalDate.parse(avreiseDatoInput.get());
+                        LocalDateTime avreiseDatoTid = onsketTid.atDate(onsketDato);
                         Reisesok sok = new Reisesok(fra, til, avreiseDatoTid, null);
                         funnetReiser = navigasjonstjeneste.FinnReiser(sok);
                         if (funnetReiser.isEmpty()) {
@@ -91,8 +96,8 @@ public class Main extends Application {
                 }
 
             } catch (Exception e) {
-                feilmeldingSok = "Ugyldig tid format. Bruk HH:MM (f.eks. 12:30)";
-                System.err.println("Feil ved parsing av tid eller søk: " + e.getMessage());
+                feilmeldingSok = "Ugyldig tid eller dato format. Bruk HH:MM og YYYY-MM-DD (f.eks. 12:30 og 2025-11-13)";
+                System.err.println("Feil ved parsing av tid/dato eller søk: " + e.getMessage());
             }
         }
 
