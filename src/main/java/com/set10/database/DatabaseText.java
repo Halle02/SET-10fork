@@ -83,11 +83,11 @@ public class DatabaseText implements IDatabase{
             }
 
             String gamleb = "";
-            if(!bruker.gamleBiletter.isEmpty()){
-                for(int j = 0; j < bruker.gamleBiletter.size()-1; j++){
-                    gamleb += bruker.gamleBiletter.get(j).id +",";
+            if(!bruker.gamleBilletter.isEmpty()){
+                for(int j = 0; j < bruker.gamleBilletter.size()-1; j++){
+                    gamleb += bruker.gamleBilletter.get(j).id +",";
                 }
-                gamleb += bruker.gamleBiletter.getLast().id;
+                gamleb += bruker.gamleBilletter.getLast().id;
             }
             writer.append("b;" + bruker.id + ";" + bruker.navn+";"+aktiveb + ";" + gamleb + "\n");
         }
@@ -205,7 +205,7 @@ public class DatabaseText implements IDatabase{
                             int billettId = Integer.parseInt(strId);
                             Billett billett = hentBillettEtterId(datadepot, billettId);
                             if (billett != null) {
-                                bruker.gamleBiletter.add(billett);
+                                bruker.gamleBilletter.add(billett);
                             } else {
                                 System.err.println("[ADVARSEL] Fant ikke gammel billett med ID: " + billettId + " for bruker " + bruker.navn);
                             }
