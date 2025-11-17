@@ -89,8 +89,7 @@ public class DatabaseText implements IDatabase{
                 }
                 gamleb += bruker.gamleBilletter.getLast().id;
             }
-            String pass = bruker.passordHash != null ? bruker.passordHash : "";
-            writer.append("b;" + bruker.id + ";" + bruker.navn + ";" + pass + ";" + aktiveb + ";" + gamleb + "\n");
+            writer.append("b;" + bruker.id + ";" + bruker.navn+";"+aktiveb + ";" + gamleb + "\n");
         }
 
         for(int i = 0; i < datadepot.billettCache.size(); i++){
@@ -181,15 +180,10 @@ public class DatabaseText implements IDatabase{
         // PASS 2: Process user lines (now that all tickets are loaded)
         for(String userLine : userLines){
             String[] bits = userLine.split(";");
-            // Ny format: b;id;navn;passordHash;aktive;gamle
-            String passordHash = "";
-            if (bits.length > 3) passordHash = bits[3];
-            Bruker bruker = new Bruker(Integer.parseInt(bits[1]), bits[2], standardFodselsdato, null);
-            // Merk: passordHash i konstruktør blir behandlet direkte (ikke hashet på nytt)
-            bruker.passordHash = passordHash.isEmpty() ? null : passordHash;
+            Bruker bruker = new Bruker(Integer.parseInt(bits[1]), bits[2], standardFodselsdato);
 
-            if(bits.length > 4 && !bits[4].isEmpty()){
-                String[] aktiveBilletterStr = bits[4].split(",");
+            if(bits.length > 3 && !bits[3].isEmpty()){
+                String[] aktiveBilletterStr = bits[3].split(",");
                 for(String strId : aktiveBilletterStr){
                     try {
                         int billettId = Integer.parseInt(strId);
@@ -204,8 +198,8 @@ public class DatabaseText implements IDatabase{
                     }
                 }
 
-                if(bits.length > 5 && !bits[5].isEmpty()){
-                    String[] gamleBilletterStr = bits[5].split(",");
+                if(bits.length > 4 && !bits[4].isEmpty()){
+                    String[] gamleBilletterStr = bits[4].split(",");
                     for(String strId : gamleBilletterStr){
                         try {
                             int billettId = Integer.parseInt(strId);

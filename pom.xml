@@ -33,20 +33,6 @@
 			<scope>test</scope>
 		</dependency>
 
-        <!-- Mockito for mock-baserte tester -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>5.12.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-junit-jupiter</artifactId>
-            <version>5.12.0</version>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>io.github.spair</groupId>
             <artifactId>imgui-java-app</artifactId>
@@ -54,21 +40,4 @@
         </dependency>
 
     </dependencies>
-    <build>
-        <plugins>
-            <!-- Surefire runs all unit tests (*Test.java) and integration tests (*IT.java) -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <!-- Include both unit tests and integration tests -->
-                    <includes>
-                        <include>**/*Test.java</include>
-                        <include>**/*IT.java</include>
-                    </includes>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

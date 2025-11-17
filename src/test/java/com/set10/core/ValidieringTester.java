@@ -1,9 +1,6 @@
-package com.set10.core.enhetstester;
+package com.set10.core;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-import com.set10.core.Validering;
-import com.set10.core.Billett;
 
 import java.time.LocalDateTime;
 

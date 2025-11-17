@@ -1,4 +1,2 @@
 # SET-prosjektoppgave
-
-
  
