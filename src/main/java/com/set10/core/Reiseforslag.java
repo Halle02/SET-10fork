@@ -7,6 +7,7 @@ public class Reiseforslag {
     public List<Avgang> avganger;
     public Reisesok sok;
     public List<Stoppested> bytteStopp;
+    public List<Rute> ruter;
     public LocalTime ankomstTid;
 
     public Reiseforslag(Avgang forsteAvgang, Reisesok sok) {
@@ -14,6 +15,7 @@ public class Reiseforslag {
         this.avganger.add(forsteAvgang);
         this.sok = sok;
         this.bytteStopp = new ArrayList<>();
+        this.ruter = new ArrayList<>();
     }
 
 
@@ -25,6 +27,67 @@ public class Reiseforslag {
     }
     public void settAnkomstTid(LocalTime ankomstTid) {
         this.ankomstTid = ankomstTid;
+    }
+    
+    public void leggTilRute(Rute rute) {
+        if (rute != null && !ruter.contains(rute)) {
+            ruter.add(rute);
+        }
+    }
+    
+    public List<Rute> hentRuter() {
+        return ruter;
+    }
+    
+    public List<Stoppested> hentAlleStoppPaaReisen() {
+        List<Stoppested> alleStoppPaaReisen = new ArrayList<>();
+        
+        if (avganger.isEmpty() || ruter.isEmpty()) {
+            return alleStoppPaaReisen;
+        }
+        
+        // For hver avgang/rute i reisen
+        for (int i = 0; i < avganger.size() && i < ruter.size(); i++) {
+            Avgang avgang = avganger.get(i);
+            Rute rute = ruter.get(i);
+            Stoppested startStopp = null;
+            
+            // Finn startstedet fra avgangens stoppestedID
+            for (Stoppested s : rute.stopp) {
+                if (s != null && s.id == avgang.stoppestedID) {
+                    startStopp = s;
+                    break;
+                }
+            }
+            
+            if (startStopp == null) continue;
+            
+            // Finn neste stopp (byttestedet eller sluttdestinasjonen)
+            Stoppested sluttStopp = null;
+            if (i < bytteStopp.size()) {
+                sluttStopp = bytteStopp.get(i);
+            } else if (i == avganger.size() - 1) {
+                // Siste avgang - bruk destinasjonen fra søket
+                sluttStopp = sok.tilStoppested;
+            }
+            
+            // Hent alle stopp mellom start og slutt på denne ruten
+            List<Stoppested> stoppestedPaaRute = rute.stopp;
+            int startIndex = stoppestedPaaRute.indexOf(startStopp);
+            int sluttIndex = sluttStopp != null ? stoppestedPaaRute.indexOf(sluttStopp) : stoppestedPaaRute.size() - 1;
+            
+            if (startIndex != -1 && sluttIndex != -1 && startIndex < sluttIndex) {
+                for (int j = startIndex; j <= sluttIndex; j++) {
+                    Stoppested stopp = stoppestedPaaRute.get(j);
+                    // Unngå duplikater (bytter vises bare én gang)
+                    if (!alleStoppPaaReisen.contains(stopp)) {
+                        alleStoppPaaReisen.add(stopp);
+                    }
+                }
+            }
+        }
+        
+        return alleStoppPaaReisen;
     }
 
      

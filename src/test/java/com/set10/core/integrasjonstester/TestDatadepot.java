@@ -1,7 +1,11 @@
-package com.set10.core;
+package com.set10.core.integrasjonstester;
 
-// import com.set10.core.Datadepot;
-// import com.set10.core.Stoppested;
+import com.set10.core.Avgang;
+import com.set10.core.Billett;
+import com.set10.core.Bruker;
+import com.set10.core.Datadepot;
+import com.set10.core.Rute;
+import com.set10.core.Stoppested;
 import com.set10.database.DatabaseText;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

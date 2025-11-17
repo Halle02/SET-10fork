@@ -14,8 +14,40 @@ import java.util.Collection;
 public class Navigasjonstjeneste {
 
     public Datadepot dataDepot;
+    // Midlertidige lister for integrasjonstester og enkel bruk
+    public java.util.List<Stoppested> stoppesteder = new java.util.ArrayList<>();
+    public java.util.List<Rute> ruter = new java.util.ArrayList<>();
 
     public Navigasjonstjeneste(){
+    }
+
+    /**
+     * Hent listen med stoppesteder mellom to stopp (inklusive begge). Søker gjennom tilgjengelige ruter
+     * og returnerer segmentet hvis begge stopp finnes på samme rute (i begge retninger).
+     */
+    public java.util.List<Stoppested> hentStoppMellom(Stoppested a, Stoppested b) {
+        java.util.List<Rute> sokRuter;
+        if (dataDepot != null && dataDepot.hentRuter() != null) {
+            sokRuter = dataDepot.hentRuter();
+        } else {
+            sokRuter = this.ruter;
+        }
+
+        for (Rute r : sokRuter) {
+            int idxA = r.stopp.indexOf(a);
+            int idxB = r.stopp.indexOf(b);
+            if (idxA != -1 && idxB != -1) {
+                if (idxA <= idxB) {
+                    return new java.util.ArrayList<>(r.stopp.subList(idxA, idxB + 1));
+                } else {
+                    // Returner segment i motsatt rekkefølge hvis b ligger før a
+                    java.util.List<Stoppested> segment = new java.util.ArrayList<>(r.stopp.subList(idxB, idxA + 1));
+                    java.util.Collections.reverse(segment);
+                    return segment;
+                }
+            }
+        }
+        return new java.util.ArrayList<>();
     }
 
     // Vil eventuelt ha slike metoder
@@ -42,8 +74,12 @@ public class Navigasjonstjeneste {
 
             int fraIndex = ruten.stopp.indexOf(fraStopp);
             int tilIndex = ruten.stopp.indexOf(tilStopp);
-            if (fraIndex != -1 && tilIndex != -1 && tilIndex > fraIndex) {
+            // Støtt begge retninger: både når tilIndex > fraIndex og når tilIndex < fraIndex
+            //Fra A til B og B til A
+            //All andre jobbe steder løser seg selv automatisk
+            if (fraIndex != -1 && tilIndex != -1 && tilIndex != fraIndex) {
                 Reiseforslag nyttForslag = new Reiseforslag(avgang, sok);
+                nyttForslag.leggTilRute(ruten);
                 LocalTime ankomstTid = beregnAnkomstTid(avgang, fraStopp, tilStopp);
                 nyttForslag.settAnkomstTid(ankomstTid);
                 alleGyldigeReiser.add(nyttForslag);
@@ -85,8 +121,11 @@ public class Navigasjonstjeneste {
                 Stoppested bytteStopp = førsteRute.stopp.get(i);
                 LocalTime estimertAnkomstBytte = beregnEstimertAnkomst(førsteAvgang.tidspunkt, fraIndex, i);
                 
+                // Krev minimum 5 minutter byttetid
+                LocalTime minimumAvgangsTid = estimertAnkomstBytte.plusMinutes(5);
+                
                 for (Avgang andreAvgang : bytteStopp.hentAvganger()) {
-                    if (andreAvgang.tidspunkt.isBefore(estimertAnkomstBytte)) {
+                    if (andreAvgang.tidspunkt.isBefore(minimumAvgangsTid)) {
                         continue;
                     }
 
@@ -99,7 +138,9 @@ public class Navigasjonstjeneste {
                     //sjekk rekkefølge
                     if (bytteIndex != -1 && tilIndex != -1 && tilIndex > bytteIndex) {
                         Reiseforslag reiseMedBytte = new Reiseforslag(førsteAvgang, sok);
+                        reiseMedBytte.leggTilRute(førsteRute);
                         reiseMedBytte.leggTilAvgang(andreAvgang);
+                        reiseMedBytte.leggTilRute(andreRute);
                         reiseMedBytte.leggTilBytteStopp(bytteStopp);
                         LocalTime ankomstTid = beregnAnkomstTid(andreAvgang, bytteStopp, tilStopp);
                         reiseMedBytte.settAnkomstTid(ankomstTid);
@@ -114,8 +155,8 @@ public class Navigasjonstjeneste {
 
     // gir bare et estimat, gammel metode
     public LocalTime beregnEstimertAnkomst(LocalTime avgangsTid, int fraIndex, int tilIndex) {
-        int antallStopp = tilIndex - fraIndex;
-        int minutter = antallStopp * 2; //2 min mellom hvert stopp
+        int antallStopp = Math.abs(tilIndex - fraIndex);
+        int minutter = antallStopp * 5; //5 min mellom hvert stopp
         return avgangsTid.plusMinutes(minutter);
     }
 
@@ -125,7 +166,21 @@ public class Navigasjonstjeneste {
         if (rute == null) return null;
         int fraIndex = rute.stopp.indexOf(fraStopp);
         int tilIndex = rute.stopp.indexOf(tilStopp);
-        if (fraIndex == -1 || tilIndex == -1 || tilIndex <= fraIndex) return null;
+        if (fraIndex == -1 || tilIndex == -1 || tilIndex == fraIndex) return null;
         return beregnEstimertAnkomst(avgang.tidspunkt, fraIndex, tilIndex);
+    }
+
+    /**
+     * Hjelpemetode for tester: registrerer en avgang på riktig stoppested
+     */
+    public void opprettAvgang(Avgang avgang) {
+        if (avgang == null) return;
+        for (Stoppested s : stoppesteder) {
+            if (s != null && s.id == avgang.stoppestedID) {
+                s.leggTilAvgang(avgang);
+                return;
+            }
+        }
+        // Hvis stoppested ikke funnet, legg ikke til — dette er akseptabelt for testformål
     }
 }
