@@ -242,11 +242,11 @@ public class Main extends Application {
                 if (ImGui.collapsingHeader("Utgåtte Billetter")) {
                     ImGui.separator();
                     
-                    if (valgtBruker.gamleBiletter.isEmpty()) {
+                    if (valgtBruker.gamleBilletter.isEmpty()) {
                         ImGui.text("Brukeren har ingen utgåtte billetter.");
                     } else {
                         ImGui.text("Utgåtte billetter for " + valgtBruker.navn + ":");
-                        for (Billett billett : valgtBruker.gamleBiletter) {
+                        for (Billett billett : valgtBruker.gamleBilletter) {
                             ImGui.text(billett.toString());
                             ImGui.sameLine();
                             ImGui.text("[UTGÅTT]");

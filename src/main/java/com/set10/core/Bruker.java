@@ -13,7 +13,7 @@ public class Bruker {
     public LocalDate fodselsDato;
     public BrukerGruppe brukerGruppe;
     public ArrayList<Billett> aktiveBilletter;
-    public ArrayList<Billett> gamleBiletter;
+    public ArrayList<Billett> gamleBilletter;
     
     
     public enum BrukerGruppe{
@@ -31,7 +31,7 @@ public class Bruker {
         this.fodselsDato = fodselsDato;
         this.brukerGruppe = BrukerGruppe.auto;
         this.aktiveBilletter = new ArrayList<>();
-        this.gamleBiletter = new ArrayList<>();
+        this.gamleBilletter = new ArrayList<>();
     }
 
     public Bruker(String navn, LocalDate fodselsDato) {
@@ -39,7 +39,7 @@ public class Bruker {
         this.fodselsDato = fodselsDato;
         this.brukerGruppe = BrukerGruppe.auto;
         this.aktiveBilletter = new ArrayList<>();
-        this.gamleBiletter = new ArrayList<>();
+        this.gamleBilletter = new ArrayList<>();
     }
 
     public int finnAlder(){
@@ -74,7 +74,7 @@ public class Bruker {
         // Flytt utgåtte billetter over til gamleBiletter
         for (Billett billett : billettSomMaFlyttes) {
             aktiveBilletter.remove(billett);
-            gamleBiletter.add(billett);
+            gamleBilletter.add(billett);
         }
     }
 

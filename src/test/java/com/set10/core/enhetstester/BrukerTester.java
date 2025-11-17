@@ -30,7 +30,7 @@ public class BrukerTester {
         assertEquals(LocalDate.of(2000, 1, 1), bruker.fodselsDato);
         assertEquals(Bruker.BrukerGruppe.auto, bruker.brukerGruppe);
         assertTrue(bruker.aktiveBilletter.isEmpty());
-        assertTrue(bruker.gamleBiletter.isEmpty());
+        assertTrue(bruker.gamleBilletter.isEmpty());
     }
 
     @Test
