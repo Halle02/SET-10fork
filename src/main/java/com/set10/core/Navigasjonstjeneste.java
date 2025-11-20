@@ -42,7 +42,7 @@ public class Navigasjonstjeneste {
 
             int fraIndex = ruten.stopp.indexOf(fraStopp);
             int tilIndex = ruten.stopp.indexOf(tilStopp);
-            if (fraIndex != -1 && tilIndex != -1 && tilIndex > fraIndex) {
+            if (fraIndex != -1 && tilIndex != -1 && fraIndex != tilIndex) {
                 Reiseforslag nyttForslag = new Reiseforslag(avgang, sok);
                 LocalTime ankomstTid = beregnAnkomstTid(avgang, fraStopp, tilStopp);
                 nyttForslag.settAnkomstTid(ankomstTid);
@@ -80,10 +80,18 @@ public class Navigasjonstjeneste {
             int fraIndex = førsteRute.stopp.indexOf(fraStopp);
             if (fraIndex == -1) continue;
 
-            //finner bare stopp etter startstoppestedet for mulig bytte
-            for (int i = fraIndex + 1; i < førsteRute.stopp.size(); i++) {
+            for (int i = 0; i < førsteRute.stopp.size(); i++) {
+                if (i == fraIndex) continue;
                 Stoppested bytteStopp = førsteRute.stopp.get(i);
-                LocalTime estimertAnkomstBytte = beregnEstimertAnkomst(førsteAvgang.tidspunkt, fraIndex, i);
+                LocalTime estimertAnkomstBytte;
+                
+                if (i > fraIndex) {
+                    estimertAnkomstBytte = beregnEstimertAnkomst(førsteAvgang.tidspunkt, fraIndex, i);
+                } else {
+                    estimertAnkomstBytte = beregnEstimertAnkomst(førsteAvgang.tidspunkt, fraIndex, førsteRute.stopp.size());
+                    int extraMinutter = (i) * 2;
+                    estimertAnkomstBytte = estimertAnkomstBytte.plusMinutes(extraMinutter);
+                }
                 
                 for (Avgang andreAvgang : bytteStopp.hentAvganger()) {
                     if (andreAvgang.tidspunkt.isBefore(estimertAnkomstBytte)) {
@@ -96,8 +104,8 @@ public class Navigasjonstjeneste {
                     int bytteIndex = andreRute.stopp.indexOf(bytteStopp);
                     int tilIndex = andreRute.stopp.indexOf(tilStopp);
                     
-                    //sjekk rekkefølge
-                    if (bytteIndex != -1 && tilIndex != -1 && tilIndex > bytteIndex) {
+                    //sjekk at de begge finnes og at det er ikke samme stopp
+                    if (bytteIndex != -1 && tilIndex != -1 && bytteIndex != tilIndex) {
                         Reiseforslag reiseMedBytte = new Reiseforslag(førsteAvgang, sok);
                         reiseMedBytte.leggTilAvgang(andreAvgang);
                         reiseMedBytte.leggTilBytteStopp(bytteStopp);
@@ -125,7 +133,14 @@ public class Navigasjonstjeneste {
         if (rute == null) return null;
         int fraIndex = rute.stopp.indexOf(fraStopp);
         int tilIndex = rute.stopp.indexOf(tilStopp);
-        if (fraIndex == -1 || tilIndex == -1 || tilIndex <= fraIndex) return null;
-        return beregnEstimertAnkomst(avgang.tidspunkt, fraIndex, tilIndex);
+        if (fraIndex == -1 || tilIndex == -1 || fraIndex == tilIndex) return null;
+        int antallStopp;
+        if (tilIndex > fraIndex) {
+            antallStopp = tilIndex - fraIndex;
+        } else {
+            antallStopp = (rute.stopp.size() - fraIndex) + tilIndex;
+        }
+        int minutter = antallStopp * 2; //2 min mellom hvert stopp - midlertidig fiks på tidsestimat
+        return avgang.tidspunkt.plusMinutes(minutter);
     }
 }
