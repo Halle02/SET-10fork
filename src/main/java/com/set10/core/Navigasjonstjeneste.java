@@ -59,7 +59,8 @@ public class Navigasjonstjeneste {
             return alleGyldigeReiser;
         }
 
-        alleGyldigeReiser.sort(Comparator.comparing(rf -> rf.avganger.get(0).tidspunkt));
+       // alleGyldigeReiser.sort(Comparator.comparing(rf -> rf.avganger.get(0).tidspunkt));
+       alleGyldigeReiser.sort(Comparator.comparing(Reiseforslag:: ReisetidMinutter));
         System.out.println("Fant " + alleGyldigeReiser.size() + " reiseforslag totalt.");
         return alleGyldigeReiser;
     }

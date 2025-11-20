@@ -15,6 +15,11 @@ public class Reiseforslag {
         this.sok = sok;
         this.bytteStopp = new ArrayList<>();
     }
+    public long ReisetidMinutter(){
+        return java.time.Duration.between(avganger.get(0).tidspunkt, ankomstTid).toMinutes();
+    }
+    
+
 
 
     public void leggTilAvgang(Avgang avgang) {
