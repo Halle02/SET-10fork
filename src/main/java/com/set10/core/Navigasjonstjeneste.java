@@ -46,6 +46,10 @@ public class Navigasjonstjeneste {
                 Reiseforslag nyttForslag = new Reiseforslag(avgang, sok);
                 LocalTime ankomstTid = beregnAnkomstTid(avgang, fraStopp, tilStopp);
                 nyttForslag.settAnkomstTid(ankomstTid);
+                if (sok.minankomst != null && ankomstTid.isBefore(sok.minankomst)) continue;
+                if (sok.maxankomst != null && ankomstTid.isAfter(sok.maxankomst)) continue;
+                    
+                
                 alleGyldigeReiser.add(nyttForslag);
             }
         }
