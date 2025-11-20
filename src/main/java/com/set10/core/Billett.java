@@ -1,36 +1,58 @@
 package com.set10.core;
 import java.time.format.DateTimeFormatter;
+//import java.util.ArrayList;  Trengs hvis vi skal hente inn soner igjen
+//import java.util.List;
 import java.time.LocalDateTime;
 
-public class Billett {
-    public String type;      //enkel, periode osv.
-    public LocalDateTime startTid;
-    public LocalDateTime sluttTid;
+public class Billett {  
 
-
-    public Billett(String type, LocalDateTime startTid) {
-        this.type = type.toLowerCase();
-        this.startTid = startTid;
-
-        if (this.type.equals("enkel")) {
-
-            this.sluttTid = startTid.plusMinutes(90);
-        } else if (this.type.equals("periode")) {
-
-            this.sluttTid = startTid.plusDays(30);
-        } else {
-
-            this.sluttTid = startTid;
-        }
+    public enum Type{
+        Enkel,
+        Periode
     }
 
+    public int id;
+    public Type type;
+    
+    public LocalDateTime startTid;
+    public LocalDateTime sluttTid;
+    //public List<Integer> gyldigForSoner;
+
+
+    public Billett(Type type, LocalDateTime startTid) {
+        this.type = type;
+        this.startTid = startTid;
+        //this.gyldigForSoner = new ArrayList<>(); // Lager bare listen, en annen metode for å legge til soner.
+
+        switch(type){
+            case Enkel:
+                this.sluttTid = startTid.plusMinutes(90);
+                break;
+            case Periode:
+                this.sluttTid = startTid.plusDays(30);
+                break;
+            default:
+                this.sluttTid = startTid;
+        }
+
+    }
+
+    // Brukes ikke fordi alle stoppesteder har samme sone "Østfold".
+    /* public void leggTilSone(int sone) {
+        if (!gyldigForSoner.contains(sone)) {
+            gyldigForSoner.add(sone);
+        }
+    } */
 
     @Override
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         return "\nBillett:\n" +
                 "Type: " + type +
+                "\nDato: " + startTid.format(dateFormatter) +
                 "\nStarttid: " + startTid.format(formatter) +
                 "\nSlutttid: " + sluttTid.format(formatter);
+                //"\nGyldig for soner: " + gyldigForSoner.toString();
     }
 }
